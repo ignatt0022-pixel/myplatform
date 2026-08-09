@@ -324,6 +324,32 @@
         </div>
     </div>
 
+    <!-- Подключение Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+  import { getAuth } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAU-9Y74bwJ5IhjKlbOCP-9jp32lRyNF_g",
+    authDomain: "fivecore-767b8.firebaseapp.com",
+    projectId: "fivecore-767b8",
+    storageBucket: "fivecore-767b8.firebasestorage.app",
+    messagingSenderId: "792235933811",
+    appId: "1:792235933811:web:460349403e3182ad2d6a06"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  window.firebaseAuth = auth;
+  window.firebaseDb = db;
+
+  // Сигнал остальному коду, что Firebase готов
+  window.dispatchEvent(new Event("firebase-ready"));
+</script>
+
     <!-- Вот тут мы подключаем твой файл с логикой -->
     <script src="script.js" defer></script>
 </body>
