@@ -2573,3 +2573,101 @@
                 }, 50);
             }
         });
+// ==================== FIREBASE: АВТОРИЗАЦИЯ ====================
+window.addEventListener("firebase-ready", () => {
+  const auth = window.firebaseAuth;
+
+  const authOverlay = document.getElementById("auth-overlay");
+  const authAccountBtn = document.getElementById("auth-account-btn");
+  const authTitle = document.getElementById("auth-title");
+  const authEmail = document.getElementById("auth-email");
+  const authPassword = document.getElementById("auth-password");
+  const authError = document.getElementById("auth-error");
+  const authSubmitBtn = document.getElementById("auth-submit-btn");
+  const authToggle = document.getElementById("auth-toggle");
+
+  let isRegisterMode = false;
+
+  // Открыть окно входа
+  authAccountBtn.addEventListener("click", () => {
+    if (auth.currentUser) {
+      // Если уже вошёл — кнопка работает как "Выйти"
+      if (confirm("Выйти из аккаунта?")) {
+        import("https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js").then(({ signOut }) => {
+          signOut(auth);
+        });
+      }
+      return;
+    }
+    authError.style.display = "none";
+    authEmail.value = "";
+    authPassword.value = "";
+    authOverlay.classList.remove("hidden");
+  });
+
+  // Клик по фону — закрыть окно
+  authOverlay.addEventListener("click", (e) => {
+    if (e.target === authOverlay) {
+      authOverlay.classList.add("hidden");
+    }
+  });
+
+  // Переключение между "Вход" и "Регистрация"
+  authToggle.addEventListener("click", () => {
+    isRegisterMode = !isRegisterMode;
+    authTitle.textContent = isRegisterMode ? "Регистрация" : "Вход";
+    authSubmitBtn.textContent = isRegisterMode ? "Зарегистрироваться" : "Войти";
+    authToggle.textContent = isRegisterMode ? "Уже есть аккаунт? Войти" : "Нет аккаунта? Зарегистрироваться";
+    authError.style.display = "none";
+  });
+
+  // Отправка формы
+  authSubmitBtn.addEventListener("click", async () => {
+    const email = authEmail.value.trim();
+    const password = authPassword.value;
+    authError.style.display = "none";
+
+    if (!email || !password) {
+      authError.textContent = "Заполните все поля";
+      authError.style.display = "block";
+      return;
+    }
+
+    const { createUserWithEmailAndPassword, signInWithEmailAndPassword } =
+      await import("https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js");
+
+    try {
+      if (isRegisterMode) {
+        await createUserWithEmailAndPassword(auth, email, password);
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+      }
+      authOverlay.classList.add("hidden");
+    } catch (err) {
+      authError.textContent = translateAuthError(err.code);
+      authError.style.display = "block";
+    }
+  });
+
+  // Слежение за состоянием входа — обновляем текст кнопки
+  import("https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js").then(({ onAuthStateChanged }) => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        authAccountBtn.textContent = user.email.split("@")[0];
+      } else {
+        authAccountBtn.textContent = "Войти";
+      }
+    });
+  });
+
+  function translateAuthError(code) {
+    const map = {
+      "auth/email-already-in-use": "Этот email уже зарегистрирован",
+      "auth/invalid-email": "Некорректный email",
+      "auth/weak-password": "Пароль слишком короткий (минимум 6 символов)",
+      "auth/invalid-credential": "Неверный email или пароль",
+      "auth/too-many-requests": "Слишком много попыток, попробуйте позже"
+    };
+    return map[code] || "Ошибка: " + code;
+  }
+});
