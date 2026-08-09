@@ -37,6 +37,25 @@
 </head>
 <body>
 
+    <!-- Окно входа/регистрации -->
+<div id="auth-overlay" class="modal-overlay hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 5000; display: flex; align-items: center; justify-content: center;">
+  <div style="background: white; border-radius: 16px; padding: 24px; width: 90%; max-width: 340px;">
+    <h2 id="auth-title" style="margin: 0 0 16px 0;">Вход</h2>
+
+    <input id="auth-email" type="email" placeholder="Email" style="width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 2px solid #e5e5e5; box-sizing: border-box;">
+    <input id="auth-password" type="password" placeholder="Пароль" style="width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 2px solid #e5e5e5; box-sizing: border-box;">
+
+    <div id="auth-error" style="color: #ff4b4b; font-size: 14px; margin-bottom: 10px; display: none;"></div>
+
+    <button id="auth-submit-btn" style="width: 100%; padding: 12px; background: #1CB0F6; color: white; border: none; border-radius: 8px; font-weight: 700; margin-bottom: 10px;">Войти</button>
+
+    <div id="auth-toggle" style="text-align: center; color: #1CB0F6; cursor: pointer; font-size: 14px;">Нет аккаунта? Зарегистрироваться</div>
+  </div>
+</div>
+
+<!-- Кнопка входа (плавающая, поверх интерфейса) -->
+<button id="auth-account-btn" style="position: fixed; top: 12px; right: 12px; z-index: 100; background: white; border: 2px solid #e5e5e5; border-radius: 20px; padding: 8px 16px; font-weight: 700; cursor: pointer;">Войти</button>
+    
     <!-- Попап настройки повторения -->
     <div id="repetition-setup-overlay" class="repetition-setup-overlay overlay-hidden" onclick="closeRepetitionSetup()">
         <div class="repetition-setup-modal" onclick="event.stopPropagation()">
