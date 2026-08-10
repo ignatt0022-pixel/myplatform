@@ -61,8 +61,8 @@
                     if (data.topic) {
                         // Клонируем объект, чтобы не мутировать исходный, если ссылки одинаковые
                         let topicCopy = JSON.parse(JSON.stringify(data.topic));
-                        // Гарантируем уникальность ID, добавляя индекс
-                        topicCopy.id = topicCopy.id + '-' + index;
+topicCopy.baseId = data.topic.id;
+topicCopy.id = topicCopy.id + '-' + index;
                         COURSE_DATA.topics.push(topicCopy);
                     }
                     if (data.lessons) {
@@ -277,6 +277,8 @@
         let currentTopic = null;
         let currentLesson = null;
         let currentLessonId = null;
+let currentLessonFailedTasks = [];
+let currentTopicBaseId = null;
         let currentTaskIndex = 0;
         let lessonStartTime = 0;
         let lessonErrors = 0;
@@ -1062,6 +1064,7 @@
             currentTopicId = topicId;
             currentSubtopicIndex = subtopicIndex;
             const topic = COURSE_DATA.topics.find(t => t.id === topicId);
+currentTopicBaseId = topic.baseId;
             const subtopic = topic.subtopics[subtopicIndex];
             
             const pathHeaderBlock = document.getElementById('path-header-block');
@@ -1210,6 +1213,7 @@
             currentAppState = 'lesson';
             lessonStartTime = Date.now();
             lessonErrors = 0;
+currentLessonFailedTasks = [];
             currentLessonId = lessonId;
             currentLesson = COURSE_DATA.lessons[lessonId];
             if (!currentLesson) {
@@ -1514,6 +1518,7 @@
 
         function showCompletionModal() {
             lessonCompleted = true;
+markLessonComplete(currentTopicBaseId, currentLessonId, currentLessonFailedTasks);
             const timeSpent = Math.floor((Date.now() - lessonStartTime) / 1000);
             const minutes = Math.floor(timeSpent / 60);
             const seconds = timeSpent % 60;
@@ -1887,7 +1892,13 @@
             // Задержка для анимации закрытия клавиатуры
             setTimeout(() => {
                 const isSuccess = (normalizedAnswer === normalizedCorrect);
-                if (!isSuccess) lessonErrors++;
+                if (!isSuccess) {
+    lessonErrors++;
+    const taskNum = currentTaskIndex + 1;
+    if (!currentLessonFailedTasks.includes(taskNum)) {
+        currentLessonFailedTasks.push(taskNum);
+    }
+}
                 
                 animateFooterOpen(isSuccess, () => {
                     if(isSuccess) {
@@ -2670,4 +2681,61 @@ window.addEventListener("firebase-ready", () => {
     };
     return map[code] || "Ошибка: " + code;
   }
+});
+// ==================== FIREBASE: ПРОГРЕСС УЧЕНИКА ====================
+let userProgress = {};
+
+async function markLessonComplete(topicId, lessonId, failedTasks) {
+  const auth = window.firebaseAuth;
+  const db = window.firebaseDb;
+  if (!auth.currentUser) return;
+
+  const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js");
+
+  try {
+    await setDoc(
+      doc(db, "users", auth.currentUser.uid),
+      {
+        progress: {
+          [topicId]: {
+            [lessonId]: {
+              completed: true,
+              failedTasks: failedTasks
+            }
+          }
+        }
+      },
+      { merge: true }
+    );
+  } catch (err) {
+    console.error("Ошибка сохранения прогресса:", err);
+  }
+}
+
+async function loadUserProgress() {
+  const auth = window.firebaseAuth;
+  const db = window.firebaseDb;
+  if (!auth.currentUser) {
+    userProgress = {};
+    return;
+  }
+
+  const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js");
+
+  try {
+    const snap = await getDoc(doc(db, "users", auth.currentUser.uid));
+    userProgress = snap.exists() ? (snap.data().progress || {}) : {};
+  } catch (err) {
+    console.error("Ошибка загрузки прогресса:", err);
+    userProgress = {};
+  }
+}
+
+window.addEventListener("firebase-ready", () => {
+  const auth = window.firebaseAuth;
+  import("https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js").then(({ onAuthStateChanged }) => {
+    onAuthStateChanged(auth, async () => {
+      await loadUserProgress();
+    });
+  });
 });
