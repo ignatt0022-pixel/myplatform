@@ -1527,6 +1527,7 @@ currentLessonFailedTasks = [];
         function showCompletionModal() {
             lessonCompleted = true;
 markLessonComplete(currentTopicBaseId, currentLessonId, currentLessonFailedTasks);
+          justCompletedLessonId = currentLessonId;
             const timeSpent = Math.floor((Date.now() - lessonStartTime) / 1000);
             const minutes = Math.floor(timeSpent / 60);
             const seconds = timeSpent % 60;
