@@ -363,10 +363,11 @@
   const db = getFirestore(app);
 
   window.firebaseAuth = auth;
-  window.firebaseDb = db;
+window.firebaseDb = db;
+window.firebaseReady = true;
 
-  // Сигнал остальному коду, что Firebase готов
-  window.dispatchEvent(new Event("firebase-ready"));
+// Сигнал остальному коду, что Firebase готов
+window.dispatchEvent(new Event("firebase-ready"));
 </script>
 
     <!-- Вот тут мы подключаем твой файл с логикой -->
