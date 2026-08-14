@@ -2738,7 +2738,7 @@ async function loadUserProgress() {
   }
 }
 
-window.addEventListener("firebase-ready", () => {
+onFirebaseReady(() => {
   const auth = window.firebaseAuth;
   import("https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js").then(({ onAuthStateChanged }) => {
     onAuthStateChanged(auth, async () => {
