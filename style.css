@@ -1087,3 +1087,31 @@
             transform: translateY(4px) !important;
             box-shadow: 0 0 0 transparent !important;
         }
+.level-circle {
+    position: relative;
+    overflow: visible;
+}
+
+.level-number-text {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.level-number-text.hidden-anim {
+    opacity: 0;
+    transform: scale(0.5);
+}
+
+.level-check-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+}
+
+.level-check-svg.visible {
+    opacity: 1;
+}
