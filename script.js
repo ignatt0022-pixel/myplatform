@@ -285,6 +285,7 @@ topicCopy.id = topicCopy.id + '-' + index;
         let currentLesson = null;
         let currentLessonId = null;
 let currentLessonFailedTasks = [];
+let justCompletedLessonId = null;
 let currentTopicBaseId = null;
         let currentTaskIndex = 0;
         let lessonStartTime = 0;
@@ -2746,3 +2747,79 @@ onFirebaseReady(() => {
     });
   });
 });
+
+function renderLevelCircleCheckmark(btn, animate) {
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("class", "level-check-svg" + (animate ? "" : " visible"));
+    svg.setAttribute("viewBox", "0 0 100 100");
+
+    const btnRadius = 50;
+    const strokeWidth = 7;
+    const ringRadius = btnRadius - strokeWidth - (strokeWidth / 2);
+
+    const ring = document.createElementNS(svgNS, "circle");
+    ring.setAttribute("class", "level-check-ring");
+    ring.setAttribute("cx", "50");
+    ring.setAttribute("cy", "50");
+    ring.setAttribute("r", ringRadius);
+    ring.setAttribute("fill", "none");
+    ring.setAttribute("stroke", "white");
+    ring.setAttribute("stroke-width", strokeWidth);
+    ring.setAttribute("stroke-linecap", "round");
+    ring.style.transformOrigin = "50px 50px";
+    ring.style.transform = "rotate(-90deg)";
+
+    const check = document.createElementNS(svgNS, "path");
+    check.setAttribute("class", "level-check-mark");
+    check.setAttribute("d", "M33 51 L45 63 L69 37");
+    check.setAttribute("fill", "none");
+    check.setAttribute("stroke", "white");
+    check.setAttribute("stroke-width", "8");
+    check.setAttribute("stroke-linecap", "round");
+    check.setAttribute("stroke-linejoin", "round");
+
+    svg.appendChild(ring);
+    svg.appendChild(check);
+    btn.appendChild(svg);
+
+    const ringLength = 2 * Math.PI * ringRadius;
+    const checkLength = check.getTotalLength();
+
+    ring.style.strokeDasharray = ringLength;
+    check.style.strokeDasharray = checkLength;
+
+    if (animate) {
+        ring.style.transition = 'none';
+        check.style.transition = 'none';
+        ring.style.strokeDashoffset = ringLength;
+        check.style.strokeDashoffset = checkLength;
+        svg.classList.add('visible');
+
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                ring.style.transition = 'stroke-dashoffset 1.0s ease';
+                ring.style.strokeDashoffset = 0;
+
+                setTimeout(() => {
+                    check.style.transition = 'stroke-dashoffset 0.7s ease';
+                    check.style.strokeDashoffset = 0;
+                }, 350);
+            });
+        });
+    } else {
+        ring.style.strokeDashoffset = 0;
+        check.style.strokeDashoffset = 0;
+    }
+}
+
+function animateJustCompletedLesson() {
+    if (!justCompletedLessonId) return;
+    const btn = document.querySelector(`#path-container .level-circle[data-lesson-id="${justCompletedLessonId}"]`);
+    if (btn) {
+        const numberSpan = btn.querySelector('.level-number-text');
+        renderLevelCircleCheckmark(btn, true);
+        if (numberSpan) numberSpan.classList.add('hidden-anim');
+    }
+    justCompletedLessonId = null;
+}
