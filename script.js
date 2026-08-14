@@ -2592,7 +2592,7 @@ markLessonComplete(currentTopicBaseId, currentLessonId, currentLessonFailedTasks
             }
         });
 // ==================== FIREBASE: АВТОРИЗАЦИЯ ====================
-window.addEventListener("firebase-ready", () => {
+onFirebaseReady(() => {
   const auth = window.firebaseAuth;
 
   const authOverlay = document.getElementById("auth-overlay");
