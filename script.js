@@ -1097,38 +1097,6 @@ currentTopicBaseId = topic.baseId;
             pathContainer.innerHTML = '';
 
             let displayCounter = 1;
-            subtopic.levels.forEach((level, index) => {
-    const lessonId = typeof level === 'object' ? level.lessonId : level;
-    const lesson = COURSE_DATA.lessons[lessonId];
-
-    const btn = document.createElement('button');
-    btn.className = 'level-circle';
-
-    if (lesson && lesson.isTest) {
-        btn.innerText = 'КР';
-        btn.style.fontSize = '28px';
-        btn.style.fontWeight = '900';
-    } else if (lesson && lesson.isRepetition) {
-        btn.innerHTML = '&#8635;';
-        btn.style.fontSize = '40px';
-        btn.style.fontWeight = '900';
-        btn.style.lineHeight = '1';
-    } else if (lesson && lesson.isGenerator) {
-        btn.innerText = 'ГЕН';
-        btn.style.fontSize = '20px';
-        btn.style.fontWeight = '900';
-    } else {
-        btn.innerText = displayCounter++;
-    }
-
-    const shadowColor = darkenColor(topic.color, 20);
-    btn.style.backgroundColor = topic.color;
-    btn.style.setProperty('--shadow-color', shadowColor);
-
-    btn.onclick = (e) => showLessonPopup(e, lessonId, btn, topic.color, subtopic.title);
-
-    pathContainer.appendChild(btn);
-});
           subtopic.levels.forEach((level, index) => {
     const lessonId = typeof level === 'object' ? level.lessonId : level;
     const lesson = COURSE_DATA.lessons[lessonId];
