@@ -1,3 +1,10 @@
+function onFirebaseReady(callback) {
+  if (window.firebaseReady) {
+    callback(); // Firebase уже готов — запускаем сразу
+  } else {
+    window.addEventListener("firebase-ready", callback); // ещё не готов — ждём сигнал
+  }
+}
 /* ===================================================
            база данных
            здесь добавлять темы и уроки
