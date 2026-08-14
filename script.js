@@ -1628,6 +1628,7 @@ markLessonComplete(currentTopicBaseId, currentLessonId, currentLessonFailedTasks
                 } else if (lessonReturnMenuPage === 'page-path') {
                     currentAppState = 'path';
                     window.scrollTo(0, savedPathScrollPosition);
+                    animateJustCompletedLesson();
                 } else {
                     currentAppState = 'topics';
                     window.scrollTo(0, savedMenuScrollPosition);
