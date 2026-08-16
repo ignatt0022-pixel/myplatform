@@ -1159,3 +1159,48 @@
     outline: none;
     border-color: var(--lesson-accent);
 }
+
+.auth-input::placeholder {
+    font-size: 15px;
+}
+
+#auth-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    color: #4b4b4b;
+}
+
+.auth-input-group {
+    position: relative;
+    margin-bottom: 12px;
+}
+.auth-input-group .auth-input {
+    margin-bottom: 0;
+    padding-right: 48px;
+}
+.auth-toggle-eye {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #afafaf;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.auth-toggle-eye:hover {
+    color: #4b4b4b;
+}
+.auth-toggle-eye svg {
+    width: 22px;
+    height: 22px;
+}
+
+#auth-toggle {
+    font-family: 'Nunito', sans-serif;
+    margin-top: 16px;
+}
