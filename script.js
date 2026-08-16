@@ -2656,17 +2656,21 @@ togglePasswordBtn.addEventListener("click", () => {
     if (e.target === authOverlay) {
       authOverlay.classList.add("hidden");
     }
-    // Клик по крестику — закрыть окно
-authCloseBtn.addEventListener("click", () => {
-  authOverlay.classList.add("hidden");
-  // Прокрутка к полю при открытии клавиатуры
-[authEmail, authPassword].forEach((input) => {
-  input.addEventListener("focus", () => {
-    setTimeout(() => {
-      input.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 300);
   });
-});
+
+    // Клик по крестику — закрыть окно
+        authCloseBtn.addEventListener("click", () => {
+          authOverlay.classList.add("hidden");
+        });
+
+        // Прокрутка к полю при открытии клавиатуры
+        [authEmail, authPassword].forEach((input) => {
+          input.addEventListener("focus", () => {
+            setTimeout(() => {
+              input.scrollIntoView({ behavior: "smooth", block: "center" });
+            }, 300);
+          });
+        });
 
   // Переключение между "Вход" и "Регистрация"
   authToggle.addEventListener("click", () => {
