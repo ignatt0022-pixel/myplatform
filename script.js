@@ -2620,6 +2620,7 @@ onFirebaseReady(() => {
   const authError = document.getElementById("auth-error");
   const authSubmitBtn = document.getElementById("auth-submit-btn");
   const authToggle = document.getElementById("auth-toggle");
+  const authCloseBtn = document.getElementById("auth-close-btn");
   const togglePasswordBtn = document.getElementById("auth-toggle-password");
 const eyeIcon = document.getElementById("auth-eye-icon");
 
@@ -2655,7 +2656,17 @@ togglePasswordBtn.addEventListener("click", () => {
     if (e.target === authOverlay) {
       authOverlay.classList.add("hidden");
     }
+    // Клик по крестику — закрыть окно
+authCloseBtn.addEventListener("click", () => {
+  authOverlay.classList.add("hidden");
+  // Прокрутка к полю при открытии клавиатуры
+[authEmail, authPassword].forEach((input) => {
+  input.addEventListener("focus", () => {
+    setTimeout(() => {
+      input.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 300);
   });
+});
 
   // Переключение между "Вход" и "Регистрация"
   authToggle.addEventListener("click", () => {
