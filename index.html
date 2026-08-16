@@ -43,7 +43,16 @@
     <h2 id="auth-title" style="margin: 0 0 16px 0;">Вход</h2>
 
     <input id="auth-email" type="email" placeholder="Email" class="auth-input">
-<input id="auth-password" type="password" placeholder="Пароль" class="auth-input">
+
+<div class="auth-input-group">
+  <input id="auth-password" type="password" placeholder="Пароль" class="auth-input">
+  <button type="button" id="auth-toggle-password" class="auth-toggle-eye">
+    <svg id="auth-eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+      <circle cx="12" cy="12" r="3"></circle>
+    </svg>
+  </button>
+</div>
 
     <div id="auth-error" style="color: #ff4b4b; font-size: 14px; margin-bottom: 10px; display: none;"></div>
 
