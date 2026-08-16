@@ -1115,3 +1115,28 @@
 .level-check-svg.visible {
     opacity: 1;
 }
+
+.auth-btn-primary {
+    box-sizing: border-box;
+    width: 100%;
+    background-color: var(--lesson-accent);
+    color: white;
+    border: none;
+    padding: 16px 20px;
+    border-radius: 16px;
+    font-size: 16px;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 5px 0 var(--lesson-shadow);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.auth-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 0 var(--lesson-shadow);
+}
+.auth-btn-primary:active {
+    transform: translateY(5px) !important;
+    box-shadow: 0 0px 0 transparent !important;
+}
