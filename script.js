@@ -2722,10 +2722,6 @@ try {
     authError.textContent = "Ошибка соединения с сервером";
     authError.style.display = "block";
 }
-    } catch (err) {
-      authError.textContent = translateAuthError(err.code);
-      authError.style.display = "block";
-    }
   });
 
   // Слежение за состоянием входа — обновляем текст кнопки
