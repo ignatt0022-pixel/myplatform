@@ -2641,6 +2641,7 @@ togglePasswordBtn.addEventListener("click", () => {
       if (confirm("Выйти из аккаунта?")) {
         import("https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js").then(({ signOut }) => {
           signOut(auth);
+          localStorage.removeItem("platformLogin");
         });
       }
       return;
@@ -2693,16 +2694,34 @@ togglePasswordBtn.addEventListener("click", () => {
       return;
     }
 
-    const { createUserWithEmailAndPassword, signInWithEmailAndPassword } =
-      await import("https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js");
+const { signInWithCustomToken } =
+    await import("https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js");
 
-    try {
-      if (isRegisterMode) {
-        await createUserWithEmailAndPassword(auth, email, password);
-      } else {
-        await signInWithEmailAndPassword(auth, email, password);
-      }
-      authOverlay.classList.add("hidden");
+try {
+    const res = await fetch("https://d5dkes6tf8o0uff54egi.4b4k4pg5.apigw.yandexcloud.net/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            action: isRegisterMode ? "register" : "login",
+            login: email,
+            password: password
+        })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+        authError.textContent = data.error || "Ошибка входа";
+        authError.style.display = "block";
+        return;
+    }
+
+    await signInWithCustomToken(auth, data.token);
+    localStorage.setItem("platformLogin", email);
+    authOverlay.classList.add("hidden");
+} catch (err) {
+    authError.textContent = "Ошибка соединения с сервером";
+    authError.style.display = "block";
+}
     } catch (err) {
       authError.textContent = translateAuthError(err.code);
       authError.style.display = "block";
@@ -2712,11 +2731,12 @@ togglePasswordBtn.addEventListener("click", () => {
   // Слежение за состоянием входа — обновляем текст кнопки
   import("https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js").then(({ onAuthStateChanged }) => {
     onAuthStateChanged(auth, (user) => {
-      if (user) {
-        authAccountBtn.textContent = user.email.split("@")[0];
-      } else {
-        authAccountBtn.textContent = "Войти";
-      }
+if (user) {
+    const savedLogin = localStorage.getItem("platformLogin");
+    authAccountBtn.textContent = savedLogin ? savedLogin.split("@")[0] : "Профиль";
+} else {
+    authAccountBtn.textContent = "Войти";
+}
     });
   });
 
