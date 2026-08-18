@@ -2697,17 +2697,32 @@ togglePasswordBtn.addEventListener("click", () => {
 const { signInWithCustomToken } =
     await import("https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js");
 
-try {
+async function attemptAuthRequest(action, email, password) {
     const res = await fetch("https://d5dkes6tf8o0uff54egi.4b4k4pg5.apigw.yandexcloud.net/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            action: isRegisterMode ? "register" : "login",
-            login: email,
-            password: password
-        })
+        body: JSON.stringify({ action, login: email, password })
     });
     const data = await res.json();
+    return { res, data };
+}
+
+try {
+    const action = isRegisterMode ? "register" : "login";
+    let result;
+    try {
+        result = await attemptAuthRequest(action, email, password);
+    } catch (err1) {
+        await new Promise(r => setTimeout(r, 1000));
+        try {
+            result = await attemptAuthRequest(action, email, password);
+        } catch (err2) {
+            await new Promise(r => setTimeout(r, 1000));
+            result = await attemptAuthRequest(action, email, password);
+        }
+    }
+
+    const { res, data } = result;
 
     if (!res.ok) {
         authError.textContent = data.error || "Ошибка входа";
