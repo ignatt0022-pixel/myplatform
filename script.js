@@ -2691,9 +2691,11 @@ authSubmitBtn.disabled = true;
     authError.style.display = "none";
 
     if (!email || !password) {
-      authError.textContent = "Заполните все поля";
-      authError.style.display = "block";
-      return;
+    authError.textContent = "Заполните все поля";
+    authError.style.display = "block";
+    authSubmitBtn.classList.remove("loading");
+    authSubmitBtn.disabled = false;
+    return;
     }
 
 const { signInWithCustomToken } =
