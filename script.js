@@ -2677,13 +2677,15 @@ togglePasswordBtn.addEventListener("click", () => {
   authToggle.addEventListener("click", () => {
     isRegisterMode = !isRegisterMode;
     authTitle.textContent = isRegisterMode ? "Регистрация" : "Вход";
-    authSubmitBtn.textContent = isRegisterMode ? "Зарегистрироваться" : "Войти";
+    authSubmitBtn.querySelector(".auth-btn-text").textContent = isRegisterMode ? "Зарегистрироваться" : "Войти";
     authToggle.textContent = isRegisterMode ? "Уже есть аккаунт? Войти" : "Нет аккаунта? Зарегистрироваться";
     authError.style.display = "none";
   });
 
   // Отправка формы
   authSubmitBtn.addEventListener("click", async () => {
+    authSubmitBtn.classList.add("loading");
+authSubmitBtn.disabled = true;
     const email = authEmail.value.trim();
     const password = authPassword.value;
     authError.style.display = "none";
@@ -2736,7 +2738,9 @@ try {
 } catch (err) {
     authError.textContent = "Ошибка соединения с сервером";
     authError.style.display = "block";
-}
+} finally {
+    authSubmitBtn.classList.remove("loading");
+    authSubmitBtn.disabled = false;
   });
 
   // Слежение за состоянием входа — обновляем текст кнопки
