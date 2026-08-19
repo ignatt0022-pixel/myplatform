@@ -2741,6 +2741,7 @@ try {
 } finally {
     authSubmitBtn.classList.remove("loading");
     authSubmitBtn.disabled = false;
+}
   });
 
   // Слежение за состоянием входа — обновляем текст кнопки
